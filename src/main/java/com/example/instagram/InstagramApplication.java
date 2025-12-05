@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableJpaAuditing // 자동으로 컬럼에 추가
+@EnableJpaAuditing
 public class InstagramApplication {
 
     public static void main(String[] args) {

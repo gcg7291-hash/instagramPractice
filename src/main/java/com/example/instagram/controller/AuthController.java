@@ -3,7 +3,6 @@ package com.example.instagram.controller;
 import com.example.instagram.dto.request.SignUpRequest;
 import com.example.instagram.service.UserService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +42,7 @@ public class AuthController {
         }
 
         // 중복 검증 username 유니크 설정해서
-        if(userService.existByUsername(signUpRequest.getUsername())) {
+        if(userService.existsByUsername(signUpRequest.getUsername())) {
             bindingResult.rejectValue("username", "duplicate", "중복된 아이디 입니다");
             return "auth/signup";
         }

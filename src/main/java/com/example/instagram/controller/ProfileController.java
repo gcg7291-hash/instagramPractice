@@ -1,0 +1,56 @@
+package com.example.instagram.controller;
+
+import com.example.instagram.dto.request.ProfileUpdateRequest;
+import com.example.instagram.dto.response.UserResponse;
+import com.example.instagram.security.CustomUserDetails;
+import com.example.instagram.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@Controller
+@RequestMapping("/profile")
+@RequiredArgsConstructor
+public class ProfileController {
+
+    private final UserService userService;
+
+    @GetMapping("/edit")
+    public String editFrom(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            Model model
+    ) {
+        UserResponse currentUser = userService.getUserById(userDetails.getId());
+
+        ProfileUpdateRequest profileUpdateRequest = new ProfileUpdateRequest();
+        profileUpdateRequest.setBio(currentUser.getBio());
+        profileUpdateRequest.setName(currentUser.getName());
+
+        model.addAttribute("profileUpdateRequest", profileUpdateRequest);
+        model.addAttribute("currentUser", currentUser);
+        return "profile/edit";
+    }
+
+    @PostMapping("/edit")
+    public String edit(
+            @Valid @ModelAttribute ProfileUpdateRequest profileUpdateRequest,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            Model model,
+            @RequestParam(value = "profileImg", required = false) MultipartFile profileImg
+    ) {
+        if (bindingResult.hasErrors()) {
+            UserResponse currentUser = userService.getUserById(userDetails.getId());
+            model.addAttribute("currentUser", currentUser);
+            return "profile/edit";
+        }
+
+        userService.updateProfile(userDetails.getId(), profileUpdateRequest, profileImg);
+        return "redirect:/users/" + userDetails.getUsername();
+    }
+}

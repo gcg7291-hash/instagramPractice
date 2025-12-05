@@ -1,6 +1,6 @@
 package com.example.instagram.dto.response;
 
-import com.example.instagram.entity.Post;
+
 import com.example.instagram.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +12,7 @@ public class ProfileResponse {
     private String username;
     private String name;
     private String bio;
+    private String profileImageUrl;
 
     // 통계
     private long postCount;
@@ -25,6 +26,7 @@ public class ProfileResponse {
                 .username(user.getUsername())
                 .name(user.getName())
                 .bio(user.getBio())
+                .profileImageUrl(user.getProfileImageUrl())
                 .postCount(0)
                 .followerCount(0)
                 .followingCount(0)
@@ -37,6 +39,7 @@ public class ProfileResponse {
                 .username(user.getUsername())
                 .name(user.getName())
                 .bio(user.getBio())
+                .profileImageUrl(user.getProfileImageUrl())
                 .postCount(postCount)
                 .followerCount(followerCount)
                 .followingCount(followingCount)

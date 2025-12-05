@@ -18,13 +18,19 @@ public class Post extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)  // user라는 데이터를 사용하지 않으면 로드하지 않음 지연 연산
     @JoinColumn(name = "user_id",  nullable = false)
     private User user;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+
+
     @Builder
-    public Post(String content, User user) {
+    public Post(String content, User user, String imageUrl) {
         this.content = content;
         this.user = user;
+        this.imageUrl = imageUrl;
     }
 }

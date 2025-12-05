@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 
 @Entity
 @Table(name = "users")
 @Getter
-@Setter
 @NoArgsConstructor
 public class User extends BaseEntity{
 
@@ -36,6 +35,9 @@ public class User extends BaseEntity{
     @Column(length=20)
     private String name;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
     @Builder
     public User(String username, String password, String email, String name, Role role, String bio) {
         this.username = username;
@@ -45,4 +47,15 @@ public class User extends BaseEntity{
         this.bio = bio;
         this.name = name;
     }
+
+    public void updateProfile(String name, String bio){
+        this.bio = bio;
+        this.name = name;
+    }
+
+    public void updateProfileImage(String profileImageUrl){
+        this.profileImageUrl = profileImageUrl;
+    }
+
+
 }
