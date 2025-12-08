@@ -25,4 +25,7 @@ public interface PostService {
     Slice<PostResponse> getAllPostsPaging(Pageable pageable);
 
     Slice<PostResponse> searchPosts(String keyword, Pageable pageable);
+
+    void deletePost(Long postId, Long currentUserId);
+
 }

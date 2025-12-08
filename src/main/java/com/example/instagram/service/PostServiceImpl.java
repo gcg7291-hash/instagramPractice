@@ -3,6 +3,7 @@ package com.example.instagram.service;
 
 import com.example.instagram.dto.request.PostCreateRequest;
 import com.example.instagram.dto.response.PostResponse;
+import com.example.instagram.entity.Comment;
 import com.example.instagram.entity.Post;
 import com.example.instagram.entity.User;
 import com.example.instagram.exception.BusinessException;
@@ -30,6 +31,8 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final FileService fileService;
     private final FollowRepository followRepository;
+
+
 
     @Override
     @Transactional
@@ -152,6 +155,32 @@ public class PostServiceImpl implements PostService {
         return new SliceImpl<>(content, pageable, posts.hasNext());
     }
 
+    @Override
+    @Transactional // ⭐️ 트랜잭션 필요
+    public void deletePost(Long postId, Long currentUserId) {
+        // 1. 게시물 존재 여부 확인
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND)); // POST_NOT_FOUND는 BusinessException을 사용했습니다.
+
+        // 2. 작성자 본인인지 확인 (권한 체크)
+        // Post 엔티티에 User 엔티티가 포함되어 있으므로 post.getUser().getId()를 사용합니다.
+        if (!post.getUser().getId().equals(currentUserId)) {
+            // Spring Security의 AccessDeniedException을 사용하거나, 커스텀 예외를 사용할 수 있습니다.
+            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        // 3. 파일 삭제 (게시물에 이미지가 있는 경우)
+        if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
+            // fileService.deleteFile(post.getImageUrl()); // 파일 삭제 서비스가 있다면 호출해야 합니다.
+            // 현재는 fileService에 deleteFile 메서드가 없으므로 주석 처리합니다.
+        }
+
+        // 4. 게시물 삭제 실행
+        // 연관된 댓글, 좋아요 등은 Post 엔티티의 @OneToMany 매핑에 CascadeType.ALL 또는 orphanRemoval = true 설정에 따라 자동으로 삭제됩니다.
+        postRepository.delete(post);
+    }
+
 
 
 }
+

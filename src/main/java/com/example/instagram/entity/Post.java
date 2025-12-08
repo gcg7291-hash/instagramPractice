@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 @Getter
@@ -24,6 +27,17 @@ public class Post extends BaseEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @OneToMany(mappedBy = "post",
+            cascade = CascadeType.ALL, // ⭐️ 이 속성을 추가합니다.
+            orphanRemoval = true) // 이 속성도 보통 함께 사용하여 고아 객체를 정리합니다.
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>(); // ⭐️ Like 엔티티 필드에도 cascade 적용
+
+
+
 
 
 

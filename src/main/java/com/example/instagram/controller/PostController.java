@@ -61,11 +61,31 @@ public class PostController {
 
         List<CommentResponse> comments = commentService.getComments(id);
 
+        // ⭐️ 1. currentUserId 변수 선언 및 초기화
+        // userDetails가 null일 경우 (비로그인 상태)를 대비하여 null 체크를 합니다.
+        Long currentUserId = userDetails != null ? userDetails.getId() : null;
+
+        // ⭐️ 2. isOwner (포스트 삭제 버튼 조건) 변수 선언 및 초기화
+        // 현재 사용자가 게시물의 작성자인지 확인합니다.
+        boolean isOwner = false;
+        if (currentUserId != null && currentUserId.equals(post.getUserId())) {
+            isOwner = true;
+        }
+
+        // 3. Model에 속성 추가
         model.addAttribute("post", post);
         model.addAttribute("commentRequest", new CommentRequest());
         model.addAttribute("comments", comments);
-        model.addAttribute("liked", likeService.isLiked(id, userDetails.getId()));
+
+        // userDetails.getId() 대신 currentUserId를 사용하여 null 체크를 피합니다.
+        model.addAttribute("liked", likeService.isLiked(id, currentUserId));
+
         model.addAttribute("likeCount", likeService.getLikeCount(id));
+
+        // ⭐️ 4. isOwner와 currentUserId를 Model에 추가
+        model.addAttribute("isOwner", isOwner);           // 포스트 삭제 버튼 표시 (th:if="${isOwner}")
+        model.addAttribute("currentUserId", currentUserId); // 댓글 삭제 버튼 표시 (th:if="${comment.userId == currentUserId}")
+
         return "post/detail";
     }
 
@@ -98,6 +118,37 @@ public class PostController {
         likeService.toggleLike(id, userDetails.getId());
         return "redirect:/posts/" + id;
     }
+
+    // ⭐️ [추가] 댓글 삭제 핸들러 (PostController 내에 위치)
+
+    @PostMapping("/{id}/delete") // POST 요청을 사용하여 삭제 처리
+    public String deletePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        // 서비스 메서드 호출
+        postService.deletePost(id, userDetails.getId());
+
+        // 삭제 후 피드 페이지로 리다이렉트
+        return "redirect:/";
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}/delete")
+    public String deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        // CommentService를 직접 호출하여 댓글 삭제 로직을 실행합니다.
+        // PostService에 deleteComment를 추가했던 구조는 순환 참조를 일으키므로,
+        // 컨트롤러에서 CommentService를 직접 호출하는 것이 가장 적절합니다.
+        commentService.deleteComment(commentId, userDetails.getId());
+
+        // 댓글 삭제 후 포스트 상세 페이지로 리다이렉트
+        return "redirect:/posts/" + postId;
+    }
+
+
 
 
 }

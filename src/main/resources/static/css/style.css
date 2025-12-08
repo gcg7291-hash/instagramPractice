@@ -1,0 +1,104 @@
+/* ---------------------------------------------------- */
+/* ⭐️ 1. CSS 변수 정의 (다크 모드 구현의 핵심) */
+/* ---------------------------------------------------- */
+:root {
+    /* 라이트 모드 (기본) */
+    --color-text: #212529;              /* 일반 텍스트 */
+    --color-text-muted: #6c757d;        /* 뮤트 텍스트 */
+    --color-bg-primary: #fff;           /* 주요 영역 배경 (카드, 네비게이션) */
+    --color-bg-secondary: #f8f9fa;      /* 전체 페이지 배경 (body) */
+    --color-border: #dee2e6;            /* 경계선 */
+    --color-input-bg: #fff;             /* 입력 필드 배경 */
+    --color-input-text: #212529;        /* 입력 필드 텍스트 */
+}
+
+/* ⭐️ .dark-mode 클래스가 body에 적용될 때 변수값 변경 */
+body.dark-mode {
+    --color-text: #e0e0e0;
+    --color-text-muted: #a0a0a0;
+    --color-bg-primary: #1e1e1e;
+    --color-bg-secondary: #121212;
+    --color-border: #3a3a3a;
+    --color-input-bg: #303030;
+    --color-input-text: #e0e0e0;
+}
+
+
+/* ---------------------------------------------------- */
+/* ⭐️ 2. 전체 스타일 적용 */
+/* ---------------------------------------------------- */
+body {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 네비게이션바 스타일 */
+#main-navbar {
+    background-color: var(--color-bg-primary) !important;
+    border-color: var(--color-border) !important;
+}
+#main-navbar .navbar-brand,
+#main-navbar a {
+    color: var(--color-text) !important;
+}
+
+
+/* 카드 및 리스트 그룹 스타일 */
+.card {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text);
+    border-color: var(--color-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* ⭐️ [수정] 리스트 그룹 아이템 및 카드 헤더 배경색 강제 적용 */
+.list-group-item, .card-header {
+    background-color: var(--color-bg-primary) !important;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+/* 폼 컨트롤 (Input 필드) 스타일 */
+.form-control {
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
+    border-color: var(--color-border);
+}
+.form-control::placeholder {
+    color: var(--color-text-muted);
+}
+.form-control:focus {
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
+    border-color: #66b3ff;
+    box-shadow: 0 0 0 0.25rem rgba(102, 179, 255, 0.25);
+}
+
+/* 텍스트 및 링크 조정 */
+.text-muted, .text-muted * {
+    color: var(--color-text-muted) !important;
+}
+/* text-dark를 사용하지 않도록 HTML을 수정했지만, 보험용 CSS */
+.text-dark {
+    color: var(--color-text) !important;
+}
+
+/* alert 경고창 스타일 조정 (로그인/회원가입 에러) */
+.alert-danger {
+    color: var(--color-text) !important;
+    background-color: #4a1d1d !important;
+    border-color: #6a1a1a !important;
+}
+
+/* 버튼 (btn-outline-secondary) 스타일 조정 */
+.btn-outline-secondary {
+    --bs-btn-color: var(--color-text);
+    --bs-btn-border-color: var(--color-border);
+    --bs-btn-hover-color: var(--color-bg-primary);
+    --bs-btn-hover-bg: var(--color-text);
+    --bs-btn-hover-border-color: var(--color-text);
+    --bs-btn-active-color: var(--color-bg-primary);
+    --bs-btn-active-bg: var(--color-text);
+    --bs-btn-active-border-color: var(--color-text);
+}

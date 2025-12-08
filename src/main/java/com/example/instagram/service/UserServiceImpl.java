@@ -24,6 +24,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService{
 
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     //    private final FollowService followService;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService{
     //    private final PostService postService;
     private final PostRepository postRepository;
     private final FileService fileService;
+
 
     @Override
     @Transactional
@@ -101,4 +103,6 @@ public class UserServiceImpl implements UserService{
                 .map(UserResponse::from)
                 .toList();
     }
+
+
 }

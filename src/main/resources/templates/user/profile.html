@@ -10,11 +10,9 @@
 <div layout:fragment="content">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- 프로필 헤더 -->
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="row">
-                        <!-- 프로필 이미지 -->
                         <div class="col-md-3 text-center">
                             <img th:src="${profile.profileImageUrl != null ? profile.profileImageUrl : '/uploads/default-profile.png'}"
                                  class="rounded-circle img-thumbnail"
@@ -22,19 +20,16 @@
                                  alt="프로필 이미지">
                         </div>
 
-                        <!-- 프로필 정보 -->
                         <div class="col-md-9">
                             <div class="d-flex align-items-center mb-3">
                                 <h4 class="mb-0 me-3" th:text="${profile.username}">username</h4>
 
-                                <!-- 본인 프로필인 경우: 프로필 편집 버튼 -->
                                 <a th:if="${isOwner}"
                                    href="/profile/edit"
                                    class="btn btn-outline-secondary btn-sm">
                                     프로필 편집
                                 </a>
 
-                                <!-- 다른 사용자 프로필인 경우: 팔로우 버튼 -->
                                 <div th:unless="${isOwner}" sec:authorize="isAuthenticated()">
                                     <form th:action="@{'/users/' + ${profile.username} + '/follow'}"
                                           method="post" class="d-inline">
@@ -47,7 +42,6 @@
                                 </div>
                             </div>
 
-                            <!-- 통계 -->
                             <div class="d-flex mb-3">
                                 <div class="me-4">
                                     <span class="fw-bold" th:text="${profile.postCount}">0</span>
@@ -65,7 +59,6 @@
                                 </a>
                             </div>
 
-                            <!-- 이름과 자기소개 -->
                             <div>
                                 <span class="fw-bold" th:text="${profile.name}">이름</span>
                                 <p th:if="${profile.bio != null}"
@@ -77,7 +70,6 @@
                 </div>
             </div>
 
-            <!-- 게시물 목록 -->
             <div class="card">
                 <div class="card-header">
                     <i class="bi bi-grid-3x3"></i> 게시물
@@ -89,13 +81,17 @@
 
                     <div class="row g-2">
                         <div th:each="post : ${posts}" class="col-4">
-                            <a th:href="@{'/posts/' + ${post.id}}">
+                            <a th:href="@{'/posts/' + ${post.id}}" class="d-block">
                                 <div class="ratio ratio-1x1 bg-light border">
-                                    <div class="d-flex align-items-center justify-content-center p-2">
-                                        <small class="text-muted text-truncate"
-                                               th:text="${#strings.abbreviate(post.content, 50)}">
-                                            게시물 내용
-                                        </small>
+                                    <img th:if="${post.imageUrl}"
+                                         th:src="${post.imageUrl}"
+                                         alt="게시물 이미지"
+                                         class="w-100 h-100 object-fit-cover"
+                                         style="object-fit: cover;">
+
+                                    <div th:unless="${post.imageUrl}"
+                                         class="d-flex align-items-center justify-content-center text-muted">
+                                        <i class="bi bi-image"></i>
                                     </div>
                                 </div>
                             </a>
