@@ -53,8 +53,8 @@ public class PostServiceImpl implements PostService {
                 .imageUrl(imageUrl)
                 .build();
 
-        Post saved = postRepository.save(post);
-        return PostResponse.from(saved);
+        Post savedPost = postRepository.save(post);
+        return PostResponse.from(savedPost);
 
     }
 
@@ -108,9 +108,9 @@ public class PostServiceImpl implements PostService {
     public Slice<PostResponse> getFeedPosts(Long userId, Pageable pageable) {
         List<Long> followingIds = followRepository.findFollowingIdsByFollowerId(userId);
 
-        Slice<Post> posts = postRepository.findFeedPostsByUserIds(followingIds, pageable);
+        Slice<Post> postSlice = postRepository.findFeedPostsByUserIds(followingIds, pageable);
 
-        List<PostResponse> content = posts.getContent().stream()
+        List<PostResponse> postResponses = postSlice.getContent().stream()
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
@@ -118,16 +118,16 @@ public class PostServiceImpl implements PostService {
                 })
                 .toList();
 
-        return new SliceImpl<>(content, pageable, posts.hasNext());
+        return new SliceImpl<>(postResponses, pageable, postSlice.hasNext());
 
 
     }
 
     @Override
     public Slice<PostResponse> getAllPostsPaging(Pageable pageable) {
-        Slice<Post> posts = postRepository.findAllWithUserPaging(pageable);
+        Slice<Post> postSlice = postRepository.findAllWithUserPaging(pageable);
 
-        List<PostResponse> content = posts.getContent().stream()
+        List<PostResponse> postResponses = postSlice.getContent().stream()
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
@@ -136,15 +136,15 @@ public class PostServiceImpl implements PostService {
                 })
                 .toList();
 
-        return new SliceImpl<>(content, pageable, posts.hasNext());
+        return new SliceImpl<>(postResponses, pageable, postSlice.hasNext());
     }
 
 
     @Override
     public Slice<PostResponse> searchPosts(String keyword, Pageable pageable) {
-        Slice<Post> posts = postRepository.searchByKeyword(keyword, pageable);
+        Slice<Post> postSlice = postRepository.searchByKeyword(keyword, pageable);
 
-        List<PostResponse> content = posts.getContent().stream()
+        List<PostResponse> postResponses = postSlice.getContent().stream()
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
@@ -152,7 +152,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .toList();
 
-        return new SliceImpl<>(content, pageable, posts.hasNext());
+        return new SliceImpl<>(postResponses, pageable, postSlice.hasNext());
     }
 
     @Override
