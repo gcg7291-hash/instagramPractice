@@ -73,13 +73,20 @@
                         <img src="${post.imageUrl}" class="card-img-top" alt="게시물 이미지">
                     ` : ''}
                     <div class="card-body">
-                        <div class="mb-2">
-                            <button class="btn btn-link text-dark p-0 me-2" onclick="toggleLike(${post.id}, this)">
-                                <i class="bi bi-heart fs-5"></i>
-                            </button>
-                            <a href="/posts/${post.id}" class="btn btn-link text-dark p-0">
-                                <i class="bi bi-chat fs-5"></i>
-                            </a>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <button class="btn btn-link text-dark p-0 me-2" onclick="toggleLike(${post.id}, this)">
+                                    <i class="bi ${post.liked ? 'bi-heart-fill text-danger' : 'bi-heart'} fs-5"></i>
+                                </button>
+                                <a href="/posts/${post.id}" class="btn btn-link text-dark p-0">
+                                    <i class="bi bi-chat fs-5"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <button class="btn btn-link text-dark p-0" onclick="toggleBookmark(${post.id}, this)">
+                                    <i class="bi ${post.bookmarked ? 'bi-bookmark-fill' : 'bi-bookmark'} fs-5"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="fw-bold mb-1">좋아요 ${post.likeCount}개</div>
                         <div>
@@ -181,6 +188,26 @@
                 }
             } catch (error) {
                 console.error('Failed to toggle like:', error);
+            }
+        }
+
+        // 북마크 토글 (전역 함수)
+        async function toggleBookmark(postId, button) {
+            try {
+                const response = await fetch(`/posts/${postId}/bookmark`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const icon = button.querySelector('i');
+                    icon.classList.toggle('bi-bookmark');
+                    icon.classList.toggle('bi-bookmark-fill');
+                }
+            } catch (error) {
+                console.error('Failed to toggle bookmark:', error);
             }
         }
     </script>

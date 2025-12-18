@@ -31,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final FileService fileService;
     private final FollowRepository followRepository;
+    private final BookmarkService bookmarkService;
 
 
 
@@ -98,7 +99,8 @@ public class PostServiceImpl implements PostService {
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
-                    return PostResponse.from(post, commentCount, likeCount);
+                    boolean isBookmarked = false; // userId가 없으므로 기본값 처리
+                    return PostResponse.from(post, commentCount, likeCount, isBookmarked);
                 })
                 .collect(Collectors.toList());
     }
@@ -114,7 +116,8 @@ public class PostServiceImpl implements PostService {
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
-                    return PostResponse.from(post, commentCount, likeCount);
+                    boolean isBookmarked = bookmarkService.isBookmarked(post.getId(), userId);
+                    return PostResponse.from(post, commentCount, likeCount, isBookmarked);
                 })
                 .toList();
 
@@ -131,8 +134,8 @@ public class PostServiceImpl implements PostService {
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
-
-                    return PostResponse.from(post, commentCount, likeCount);
+                    boolean isBookmarked = false; // userId가 없으므로 기본값 처리
+                    return PostResponse.from(post, commentCount, likeCount, isBookmarked);
                 })
                 .toList();
 
@@ -148,7 +151,8 @@ public class PostServiceImpl implements PostService {
                 .map(post -> {
                     long likeCount = likeRepository.countByPostId(post.getId());
                     long commentCount = commentRepository.countByPostId(post.getId());
-                    return PostResponse.from(post, commentCount, likeCount);
+                    boolean isBookmarked = false; // userId가 없으므로 기본값 처리
+                    return PostResponse.from(post, commentCount, likeCount, isBookmarked);
                 })
                 .toList();
 
