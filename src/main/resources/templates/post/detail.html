@@ -25,18 +25,21 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
-                        <div sec:authorize="isAuthenticated()">
-                            <form th:action="@{/posts/{id}/like(id=${post.id})}" method="post" style="display:inline-block;">
-                                <button type="submit" class="btn btn-link text-decoration-none p-0 me-2">
-                                    <i th:class="${liked} ? 'bi bi-heart-fill text-danger fs-5' : 'bi bi-heart fs-5' "></i>
+                        <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                            <form th:action="@{/posts/{id}/like(id=${post.id})}" method="post" style="display:inline-block;" class="me-2">
+                                <button type="submit" class="btn btn-link text-dark p-0">
+                                    <i th:class="${liked} ? 'bi bi-heart-fill text-danger fs-5' : 'bi bi-heart fs-5'"></i>
+                                </button>
+                            </form>
+                            <a href="#comments-section" class="btn btn-link text-dark p-0 me-auto">
+                                <i class="bi bi-chat fs-5"></i>
+                            </a>
+                            <form th:action="@{/posts/{id}/bookmark(id=${post.id})}" method="post" style="display:inline-block;">
+                                <button type="submit" class="btn btn-link text-dark p-0">
+                                    <i th:class="${isBookmarked} ? 'bi bi-bookmark-fill fs-5' : 'bi bi-bookmark fs-5'"></i>
                                 </button>
                             </form>
                         </div>
-                        <a href="#comments-section" class="btn btn-link text-dark p-0">
-                            <i class="bi bi-chat fs-5"></i>
-                        </a>
-                    </div>
 
                     <div class="fw-bold mb-1">
                         <span th:text="${likeCount}">0</span>명이 좋아합니다.

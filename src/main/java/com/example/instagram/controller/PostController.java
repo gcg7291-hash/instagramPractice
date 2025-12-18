@@ -5,11 +5,13 @@ import com.example.instagram.dto.request.PostCreateRequest;
 import com.example.instagram.dto.response.CommentResponse;
 import com.example.instagram.dto.response.PostResponse;
 import com.example.instagram.security.CustomUserDetails;
+import com.example.instagram.service.BookmarkService;
 import com.example.instagram.service.CommentService;
 import com.example.instagram.service.LikeService;
 import com.example.instagram.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,7 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final LikeService likeService;
+    private final BookmarkService bookmarkService;
 
     @GetMapping("/new")
     public String createForm(Model model) {
@@ -79,6 +82,7 @@ public class PostController {
 
         // userDetails.getId() 대신 currentUserId를 사용하여 null 체크를 피합니다.
         model.addAttribute("liked", likeService.isLiked(id, currentUserId));
+        model.addAttribute("isBookmarked", bookmarkService.isBookmarked(id, currentUserId));
 
         model.addAttribute("likeCount", likeService.getLikeCount(id));
 
@@ -146,6 +150,13 @@ public class PostController {
 
         // 댓글 삭제 후 포스트 상세 페이지로 리다이렉트
         return "redirect:/posts/" + postId;
+    }
+
+    @PostMapping("/{postId}/bookmark")
+    public ResponseEntity<Void> toggleBookmark(@PathVariable Long postId,
+                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        bookmarkService.toggleBookmark(postId, customUserDetails.getId());
+        return ResponseEntity.ok().build();
     }
 
 

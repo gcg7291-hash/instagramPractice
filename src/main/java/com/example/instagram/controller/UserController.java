@@ -25,6 +25,7 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
     private final FollowService followService;
+    private final BookmarkService bookmarkService;
 
     @GetMapping("/{username}")
     public String profile(
@@ -43,6 +44,15 @@ public class UserController {
 
         boolean isOwner = userDetails.getUsername().equals(username);
         model.addAttribute("isOwner", isOwner);
+
+        if (isOwner) {
+            List<PostResponse> bookmarkedPosts = bookmarkService.findBookmarkedPosts(userDetails.getId())
+                    .stream()
+                    .map(PostResponse::from)
+                    .toList();
+            model.addAttribute("bookmarkedPosts", bookmarkedPosts);
+        }
+
         return "user/profile";
 
     }
